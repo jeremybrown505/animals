@@ -63,22 +63,20 @@ public class ImageFragment extends Fragment {
           .excludeFieldsWithoutExposeAnnotation()
           .create();
       Retrofit retrofit = new Retrofit.Builder()
-          .baseUrl("https://us-central1-apis-4674e.cloudfunctions.net/")
+          .baseUrl(BuildConfig.BASE_URL)
           .addConverterFactory(GsonConverterFactory.create(gson))
           .build();
 
       AnimalService animalService = retrofit.create(AnimalService.class);
 
       try {
-        Log.d("AnimalService", "before request");
 
         Response<List<Animal>> response = animalService.getAnimals(BuildConfig.CLIENT_KEY)
             .execute();
-        Log.d("AnimalService","after request");
+
 
         if (response.isSuccessful()) {
           List<Animal> animals = response.body();
-          Log.d("AnimalService", String.valueOf(animals));
           assert animals != null;
           final String url = animals.get(0).getUrl();
           getActivity().runOnUiThread(new Runnable() {
@@ -89,13 +87,11 @@ public class ImageFragment extends Fragment {
           });
 
         } else {
-          Log.e("AnimalService", response.message());
 
         }
 
 
       } catch (IOException e) {
-        Log.e("AnimalService", e.getMessage(), e);
       }
     }
 
