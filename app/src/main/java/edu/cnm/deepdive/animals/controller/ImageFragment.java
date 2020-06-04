@@ -1,46 +1,59 @@
 package edu.cnm.deepdive.animals.controller;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import edu.cnm.deepdive.animals.BuildConfig;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import edu.cnm.deepdive.animals.R;
 import edu.cnm.deepdive.animals.model.Animal;
-import edu.cnm.deepdive.animals.service.AnimalService;
-import java.io.IOException;
+import edu.cnm.deepdive.animals.viewmodel.MainViewModel;
 import java.util.List;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ImageFragment extends Fragment {
 
   private WebView contentView;
+  MainViewModel viewModel;
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+  public View onCreateView(LayoutInflater inflater,
+      ViewGroup container,
       Bundle savedInstanceState) {
-
     View root = inflater.inflate(R.layout.fragment_image, container, false);
     setupWebView(root);
     return root;
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view,
+      @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    //noinspection ConstantConditions
+    viewModel = new ViewModelProvider(getActivity())
+        .get(MainViewModel.class);
+    viewModel.getAnimals().observe(getViewLifecycleOwner(),
+        new Observer<List<Animal>>() {
+      @Override
+      public void onChanged(List<Animal> animals) {
+        contentView.loadUrl(animals.get(49).getUrl());
+      }
+    });
   }
 
   private void setupWebView(View root) {
     contentView = root.findViewById(R.id.content_view);
     contentView.setWebViewClient(new WebViewClient() {
       @Override
-      public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+      public boolean shouldOverrideUrlLoading(WebView view,
+          WebResourceRequest request) {
         return false;
       }
     });
@@ -51,49 +64,6 @@ public class ImageFragment extends Fragment {
     settings.setDisplayZoomControls(false);
     settings.setUseWideViewPort(true);
     settings.setLoadWithOverviewMode(true);
-    new Retreiver().start();
-
-  }
-
-  private class Retreiver extends Thread {
-
-    @Override
-    public void run() {
-      Gson gson = new GsonBuilder()
-          .excludeFieldsWithoutExposeAnnotation()
-          .create();
-      Retrofit retrofit = new Retrofit.Builder()
-          .baseUrl(BuildConfig.BASE_URL)
-          .addConverterFactory(GsonConverterFactory.create(gson))
-          .build();
-
-      AnimalService animalService = retrofit.create(AnimalService.class);
-
-      try {
-
-        Response<List<Animal>> response = animalService.getAnimals(BuildConfig.CLIENT_KEY)
-            .execute();
-
-
-        if (response.isSuccessful()) {
-          List<Animal> animals = response.body();
-          assert animals != null;
-          final String url = animals.get(0).getUrl();
-          getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-              contentView.loadUrl(url);
-            }
-          });
-
-        } else {
-
-        }
-
-
-      } catch (IOException e) {
-      }
-    }
-
   }
 }
+
