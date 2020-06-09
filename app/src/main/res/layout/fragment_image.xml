@@ -8,13 +8,25 @@
   tools:context=".controller.ImageFragment">
 
 
-
   <WebView
     android:id="@+id/content_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
+  </WebView>
+
+  <androidx.appcompat.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorPrimary"
+    android:minHeight="?attr/actionBarSize"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="@id/content_view"
+    >
 
     <Spinner
       android:id="@+id/animals_spinner"
@@ -22,8 +34,8 @@
       android:layout_height="wrap_content"
       />
 
+  </androidx.appcompat.widget.Toolbar>
 
-  </WebView>
 
   <TextView
     android:layout_width="match_parent"
@@ -32,7 +44,6 @@
     app:layout_constraintBottom_toBottomOf="parent"
     android:text="@string/portrait_mode"
     android:textColor="#ffffff"
-
     />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
