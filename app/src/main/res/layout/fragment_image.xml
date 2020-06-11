@@ -7,31 +7,34 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   tools:context=".controller.ImageFragment">
 
-
-  <WebView
-    android:id="@+id/content_view"
+  <ImageView
+    android:id="@+id/image_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:adjustViewBounds="true"
+    app:layout_constraintTop_toBottomOf="@id/toolbar"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
-  </WebView>
+    app:layout_constraintEnd_toEndOf="parent"
+    />
 
   <androidx.appcompat.widget.Toolbar
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
+    android:background="@color/colorBackground"
     android:minHeight="?attr/actionBarSize"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toTopOf="@id/content_view"
+    app:layout_constraintTop_toTopOf="parent"
     >
 
     <Spinner
       android:id="@+id/animals_spinner"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_gravity="end|center_vertical"
       />
 
   </androidx.appcompat.widget.Toolbar>
